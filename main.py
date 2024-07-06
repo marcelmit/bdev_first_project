@@ -12,7 +12,7 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Tank Game")
         self.screen = pygame.display.set_mode((800, 600))
-        self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()      
         self.player = PlayerTank()
 
     def run(self):
