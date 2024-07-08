@@ -14,6 +14,8 @@ class Game:
         self.screen = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()      
         self.player = PlayerTank()
+        self.bullet_group = pygame.sprite.Group()
+        self.rocket_group = pygame.sprite.Group()
 
     def run(self):
         while True:
@@ -27,7 +29,12 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
+            self.player.shoot(self.bullet_group, self.rocket_group)
             self.player.update(self.screen)
+            self.bullet_group.draw(self.screen)
+            self.bullet_group.update()
+            self.rocket_group.draw(self.screen)
+            self.rocket_group.update()
 
             pygame.display.update()
             self.clock.tick(60)
