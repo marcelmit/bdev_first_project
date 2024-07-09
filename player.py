@@ -11,9 +11,13 @@ class PlayerTank(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (300, 300)
         self.direction = "up"
+        self.health = 5
         # "Cooldown" for the shoot method
         self.last_shot_time = 0
         self.shoot_delay = 500
+        # Player Invulnerability Duration after taking Damage
+        self.invulnerability_duration = 2
+        self.last_hit_time = 0
 
     def move(self):
         pressed_keys = pygame.key.get_pressed()
@@ -136,6 +140,15 @@ class PlayerTank(pygame.sprite.Sprite):
             rocket_group.add(rocket)
             self.last_shot_time = current_time
 
+    def decrease_health(self):
+        self.health -= 1
+        print(f"Invulnerable for {self.invulnerability_duration} seconds")
+        print(f"{self.health} health left")
+        # Game over if health reaches 0
+        if self.health <= 0:
+            self.kill()
+            print("Game Over")
+
     def update(self, surface):
         self.move()
         surface.blit(self.image, self.rect)
@@ -178,8 +191,6 @@ class PlayerProjectile(pygame.sprite.Sprite):
         if (self.rect.right < 0 or self.rect.left > pygame.display.get_surface().get_width() or 
             self.rect.bottom < 0 or self.rect.top > pygame.display.get_surface().get_height()):
             self.kill()
-            # testing
-            print("proj del")
 
     def update(self):
         self.move()
