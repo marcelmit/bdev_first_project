@@ -4,12 +4,13 @@ from pygame.locals import *
 from helper_functions import load_image, rotate_image
 
 class PlayerTank(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, player_projectile_group):
         super().__init__()
         self.original_image = load_image("player/player_tank.png")
         self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = (300, 300)
+        self.player_projectile_group = player_projectile_group
         self.direction = "up"
         self.health = 5
         # "Cooldown" for the shoot method
@@ -62,7 +63,7 @@ class PlayerTank(pygame.sprite.Sprite):
         if direction_changed:
             self.image = rotate_image(self.original_image, self.direction)
 
-    def shoot(self, bullet_group, rocket_group, is_rocket=False):
+    def shoot(self, player_projectile_group, is_rocket=False):
         pressed_keys = pygame.key.get_pressed()
         current_time = pygame.time.get_ticks()
 
@@ -116,7 +117,7 @@ class PlayerTank(pygame.sprite.Sprite):
             elif self.direction == "down_right":
                 bullet1 = PlayerProjectile(self.rect.centerx + offset_x + 9, self.rect.centery + offset_y + 28, bullet_direction)
                 bullet2 = PlayerProjectile(self.rect.centerx - offset_x + 89, self.rect.centery + offset_y + 40, bullet_direction)
-            bullet_group.add(bullet1, bullet2)
+            player_projectile_group.add(bullet1, bullet2)
             self.last_shot_time = current_time
 
         # create one rocket
@@ -137,7 +138,7 @@ class PlayerTank(pygame.sprite.Sprite):
                 rocket = PlayerProjectile(self.rect.centerx + 17, self.rect.centery + 9, self.direction, is_rocket=True)
             elif self.direction == "down_right":
                 rocket = PlayerProjectile(self.rect.centerx + 17, self.rect.centery + 9, self.direction, is_rocket=True)
-            rocket_group.add(rocket)
+            player_projectile_group.add(rocket)
             self.last_shot_time = current_time
 
     def decrease_health(self):
