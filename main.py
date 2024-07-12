@@ -13,17 +13,18 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Tank Game")
-        self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((1920, 600))
         self.clock = pygame.time.Clock()
 
         self.player_projectile_group = pygame.sprite.Group()
         self.enemy_projectile_group = pygame.sprite.Group()
+        self.firewall_group = pygame.sprite.Group()       
 
         self.player = PlayerTank(self.player_projectile_group)
         self.player_group = pygame.sprite.GroupSingle(self.player)
 
-        self.enemy = Enemy(self.screen, self.enemy_projectile_group, self.player)
-        self.enemies_group = pygame.sprite.Group(self.enemy)              
+        self.enemy = Enemy(self.screen, self.enemy_projectile_group, self.player, self.firewall_group)
+        self.enemies_group = pygame.sprite.Group(self.enemy)   
         
     def events(self):
         for event in pygame.event.get():
@@ -33,17 +34,25 @@ class Game:
                 sys.exit()
 
     def collisions(self):
+        current_time = time.time()
         # Collision - player > enemies triggers a 2 second invulnerability window
         if pygame.sprite.spritecollideany(self.player, self.enemies_group) or pygame.sprite.spritecollide(self.player, self.enemy_projectile_group, True):
             current_time = time.time()
             if current_time - self.player.last_hit_time > self.player.invulnerability_duration:
-                #self.player.decrease_health()
+                self.player.decrease_health()
                 self.player.last_hit_time = current_time                
 
         # Collision - player projectiles > enemies + delete any projectile hitting an enemy
         for projectile in self.player_projectile_group.sprites():
             if pygame.sprite.spritecollideany(projectile, self.enemies_group):
                 projectile.kill()
+
+        # Collision - player > firewall
+        for firewall in self.firewall_group:
+            if pygame.sprite.spritecollideany(self.player, firewall.collision_tiles):
+                if current_time - self.player.last_hit_time > self.player.invulnerability_duration:
+                    self.player.decrease_health()
+                    self.player.last_hit_time = current_time
 
     def update(self):
         self.collisions()
@@ -54,6 +63,7 @@ class Game:
 
         self.enemy.update()
         self.enemy_projectile_group.update()
+        self.firewall_group.update()
 
     def draw(self):
         self.screen.fill(WHITE)
@@ -63,6 +73,8 @@ class Game:
 
         self.enemies_group.draw(self.screen)
         self.enemy_projectile_group.draw(self.screen)
+        for firewall in self.firewall_group:
+            firewall.draw(self.screen)
 
         pygame.display.update()
 
