@@ -6,6 +6,12 @@ def load_image(path):
     image = pygame.image.load(BASE_IMG_PATH + path).convert_alpha()
     return image
 
+BASE_MENU_IMG_PATH = "assets/images/ui/"
+
+def load_menu_image(path):
+    image = pygame.image.load(BASE_MENU_IMG_PATH + path + ".png").convert_alpha()
+    return image
+
 # Rotate image based on movement direction
 def rotate_image(image, direction):
     if direction == "up":
