@@ -6,13 +6,17 @@ from helper_functions import load_image, rotate_image
 class PlayerTank(pygame.sprite.Sprite):
     def __init__(self, player_projectile_group):
         super().__init__()
-        self.original_image = load_image("player/player_tank.png")
+        self.original_image = load_image("player/player_tank")
         self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = (300, 300)
         self.player_projectile_group = player_projectile_group
         self.direction = "up"
-        self.health = 5
+        # Player Health
+        self.max_health = 200
+        self.health = 100
+        self.ratio = self.health / self.max_health
+        self.ammo = str(5)
         # "Cooldown" for the shoot method
         self.last_shot_time = 0
         self.shoot_delay = 500
@@ -142,7 +146,7 @@ class PlayerTank(pygame.sprite.Sprite):
             self.last_shot_time = current_time
 
     def decrease_health(self):
-        self.health -= 1
+        self.health -= 5
         print(f"Invulnerable for {self.invulnerability_duration} seconds")
         print(f"{self.health} health left")
         # Game over if health reaches 0
@@ -158,9 +162,9 @@ class PlayerProjectile(pygame.sprite.Sprite):
     def __init__(self, x, y, direction, is_rocket=False):
         super().__init__()
         if is_rocket:
-            self.original_image = load_image("player/player_tank_rocket.png")
+            self.original_image = load_image("player/player_tank_rocket")
         else:
-            self.original_image = load_image("player/player_tank_bullet.png")
+            self.original_image = load_image("player/player_tank_bullet")
         self.image = rotate_image(self.original_image, direction)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)

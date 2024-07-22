@@ -9,12 +9,14 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, surface, enemy_projectile_group, player_position, firewall_group):
         super().__init__()
         self.surface = surface
-        self.image = load_image("enemies/player_tank.png")
+        self.image = load_image("enemies/player_tank")
         self.rect = self.image.get_rect()
         self.rect.center = (150, 150)
         self.enemy_projectile_group = enemy_projectile_group
         self.firewall_group = firewall_group
         self.player_position = player_position
+        self.max_health = 1000
+        self.health = 500
         # Fireball
         self.fireball_last_shot_time = 0
         self.fireball_interval = 2
@@ -44,7 +46,7 @@ class Enemy(pygame.sprite.Sprite):
 class Fireball(pygame.sprite.Sprite):
     def __init__(self, enemy_position, player_position):
         super().__init__()
-        self.original_image = load_image("enemies/enemy_fireball.png")
+        self.original_image = load_image("enemies/enemy_fireball")
         self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = enemy_position
@@ -68,7 +70,7 @@ class Firewall(pygame.sprite.Sprite):
         self.start_position = [0, 0]
         self.empty_position = [0, 0]
         self.wall_tiles = []
-        self.empty_tile_image = load_image("enemies/enemy_fireball.png")
+        self.empty_tile_image = load_image("enemies/enemy_fireball")
         self.rect = pygame.Rect(self.start_position[0], self.start_position[1], 0, 0) # Dummy rect for collisions
         self.collision_tiles = pygame.sprite.Group()
         # Create random gaps towrds the center of the wall
@@ -79,7 +81,7 @@ class Firewall(pygame.sprite.Sprite):
             if i in self.empty_wall_tiles:
                 continue
             else:
-                tile_image = load_image("enemies/enemy_firewall.png")
+                tile_image = load_image("enemies/enemy_firewall")
                 tile_rect = tile_image.get_rect()
                 tile_rect.topleft = (self.start_position[0] + i * self.tile_width, self.start_position[1])
                 self.wall_tiles.append((tile_image, tile_rect))
