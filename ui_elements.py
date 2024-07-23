@@ -51,7 +51,7 @@ class HealthBar():
         self.text = text
         self.original_text = self.text
         if text and text_position:
-            self.text = self.main_font.render(self.original_text, True, "black")
+            self.text = self.main_font.render(self.original_text, True, "white")
             self.text_rect = self.text.get_rect(center=(text_position))
 
     def update(self, surface):

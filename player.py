@@ -9,14 +9,15 @@ class PlayerTank(pygame.sprite.Sprite):
         self.original_image = load_image("player/player_tank")
         self.image = self.original_image
         self.rect = self.image.get_rect()
-        self.rect.center = (300, 300)
+        self.rect.center = (960, 480)
         self.player_projectile_group = player_projectile_group
         self.direction = "up"
+        self.velocity = 15
         # Player Health
         self.max_health = 200
         self.health = 100
         self.ratio = self.health / self.max_health
-        self.ammo = str(5)
+        self.ammo = 5
         # "Cooldown" for the shoot method
         self.last_shot_time = 0
         self.shoot_delay = 500
@@ -30,14 +31,24 @@ class PlayerTank(pygame.sprite.Sprite):
         new_direction = None
         direction_x, direction_y = 0, 0
         
+        # Stops player from moving off-screen
+        if self.rect.left <= 0:
+            self.rect.left = 15
+        elif self.rect.right >= 1890:
+            self.rect.right = 1890
+        if self.rect.top <= 87:
+            self.rect.top = 87
+        elif self.rect.bottom >= 965:
+            self.rect.bottom = 965
+
         if pressed_keys[K_UP] or pressed_keys[K_w]:
-            direction_y -= 5
+            direction_y -= self.velocity
         if pressed_keys[K_DOWN] or pressed_keys[K_s]:
-            direction_y += 5
+            direction_y += self.velocity
         if pressed_keys[K_LEFT] or pressed_keys[K_a]:
-            direction_x -= 5
+            direction_x -= self.velocity
         if pressed_keys[K_RIGHT] or pressed_keys[K_d]:
-            direction_x += 5
+            direction_x += self.velocity
 
         self.rect.move_ip(direction_x, direction_y)
 
@@ -72,7 +83,7 @@ class PlayerTank(pygame.sprite.Sprite):
         current_time = pygame.time.get_ticks()
 
         # Create two bullets
-        if pressed_keys[K_q] and current_time - self.last_shot_time > self.shoot_delay:
+        if pressed_keys[K_SPACE] and current_time - self.last_shot_time > self.shoot_delay:
             offset_x, offset_y = 0, 0
             bullet_direction = self.direction
 
@@ -125,7 +136,8 @@ class PlayerTank(pygame.sprite.Sprite):
             self.last_shot_time = current_time
 
         # create one rocket
-        if pressed_keys[K_e] and current_time - self.last_shot_time > self.shoot_delay:
+        if self.ammo > 0 and pressed_keys[K_LCTRL] and current_time - self.last_shot_time > self.shoot_delay:
+            self.ammo -= 1
             if self.direction == "up":
                 rocket = PlayerProjectile(self.rect.centerx, self.rect.centery, self.direction, is_rocket=True)
             elif self.direction == "down":
@@ -145,14 +157,13 @@ class PlayerTank(pygame.sprite.Sprite):
             player_projectile_group.add(rocket)
             self.last_shot_time = current_time
 
-    def decrease_health(self):
-        self.health -= 5
+    def decrease_health(self, damage):
+        self.health -= damage
         print(f"Invulnerable for {self.invulnerability_duration} seconds")
         print(f"{self.health} health left")
         # Game over if health reaches 0
         if self.health <= 0:
             self.kill()
-            print("Game Over")
 
     def update(self, surface):
         self.move()

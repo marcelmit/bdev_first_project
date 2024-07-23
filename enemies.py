@@ -50,7 +50,7 @@ class Fireball(pygame.sprite.Sprite):
         self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = enemy_position
-        self.velocity = 3
+        self.velocity = 6
         # Calculate player position
         direction_vector = pygame.math.Vector2(player_position) - pygame.math.Vector2(enemy_position)
         self.direction = direction_vector.normalize()
@@ -66,7 +66,7 @@ class Firewall(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.tile_width = 79
-        self.velocity = 2
+        self.velocity = 6
         self.start_position = [0, 0]
         self.empty_position = [0, 0]
         self.wall_tiles = []

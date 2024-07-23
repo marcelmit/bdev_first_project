@@ -20,7 +20,7 @@ class GameState(Enum):
 class Game:
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption("Tank Game")
+        pygame.display.set_caption("Fantasy Tank")
         self.screen = pygame.display.set_mode((1920, 1080))
         self.clock = pygame.time.Clock()
         self.current_state = GameState.MENU
@@ -54,7 +54,7 @@ class Game:
         if pygame.sprite.spritecollideany(self.player, self.enemies_group) or pygame.sprite.spritecollide(self.player, self.enemy_projectile_group, True):
             current_time = time.time()
             if current_time - self.player.last_hit_time > self.player.invulnerability_duration:
-                self.player.decrease_health()
+                self.player.decrease_health(15)
                 self.player.last_hit_time = current_time           
 
         # Collision - player projectiles > enemies + delete any projectile hitting an enemy
@@ -66,7 +66,7 @@ class Game:
         for firewall in self.firewall_group:
             if pygame.sprite.spritecollideany(self.player, firewall.collision_tiles):
                 if current_time - self.player.last_hit_time > self.player.invulnerability_duration:
-                    self.player.decrease_health()
+                    self.player.decrease_health(5)
                     self.player.last_hit_time = current_time
 
     def update(self):
@@ -100,6 +100,7 @@ class Game:
         self.screen.fill(WHITE)
 
         ui_elements = [
+            Button("ui/Main_Menu_Background", position=(960, 540), size=(1920, 1080)),
             Button("ui/Box_Square", position=(960, 540), size=(480, 400)),
             Button("ui/Button_Square", position=(960, 430), size=(240, 100), text="Play", interactive=True),
             Button("ui/Button_Square", position=(960, 545), size=(240, 100), text="Options", interactive=True),
@@ -124,9 +125,9 @@ class Game:
         for element in ui_elements:
             element.update(self.screen)
 
-        self.play_button = ui_elements[1]
-        self.options_button = ui_elements[2]
-        self.exit_button = ui_elements[3]
+        self.play_button = ui_elements[2]
+        self.options_button = ui_elements[3]
+        self.exit_button = ui_elements[4]
 
     def render_options(self):
         self.screen.fill(WHITE)
@@ -142,16 +143,16 @@ class Game:
         self.screen.fill(WHITE)
 
         ui_elements = [
-            Button("ui/Button_Square", position=(68, 925), size=(125, 60)), # Player ammo 
-            Button("ui/Rocket_Icon", position=(38, 926), size=(40, 40), text=self.player.ammo, text_position=(90, 926)),
-            Button("ui/Button_Square", position=(175, 1000), size=(345, 80)), # Player health bar
-            HealthBar("ui/HP_Bar", position=(33, 1000), size=(290 * (self.player.health / self.player.max_health), 50)),
-            HealthBar("ui/HP_Bar_Frame", position=(30, 1000), size=(300, 50), text=(f"{self.player.health}" + "/" + f"{self.player.max_health}"), text_position=(180, 1000)),
-            HealthBar("ui/Heart_Icon", position=(14, 998), size=(55, 55)),
-            Button("ui/Button_Square", position=(1590, 45), size=(640, 80)), # Enemy health bar
-            HealthBar("ui/HP_Bar", position=(1300, 45), size=(590 * (self.enemy.health / self.enemy.max_health), 50)),
-            HealthBar("ui/HP_Bar_Frame", position=(1300, 45), size=(590, 50), text=(f"{self.enemy.health}" + "/" + f"{self.enemy.max_health}"), text_position=(1605, 45)),
-            HealthBar("ui/Heart_Icon", position=(1280, 47), size=(70, 70))
+            Button("ui/Gameplay_Background", position=(960, 530), size=(1920, 930)),
+            Button("ui/Button_Square", position=(960, 35), size=(1950, 80)), # Top bar
+            Button("ui/Button_Square", position=(960, 1020), size=(1950, 80)), # Bot bar
+            Button("ui/Rocket_Icon", position=(1080, 1020), size=(40, 40), text=str(self.player.ammo), text_position=(1140, 1020)), # Player ammo count
+            HealthBar("ui/HP_Bar", position=(533, 1020), size=(500 * (self.player.health / self.player.max_health), 50)), # Player health bar
+            HealthBar("ui/HP_Bar_Frame", position=(530, 1020), size=(500, 50), text=(f"{self.player.health}" + "/" + f"{self.player.max_health}"), text_position=(780, 1020)),
+            HealthBar("ui/Heart_Icon", position=(514, 1018), size=(55, 55)),
+            HealthBar("ui/HP_Bar", position=(665, 38), size=(580 * (self.enemy.health / self.enemy.max_health), 50)), # Enemy health bar
+            HealthBar("ui/HP_Bar_Frame", position=(665, 38), size=(580, 50), text=(f"{self.enemy.health}" + "/" + f"{self.enemy.max_health}"), text_position=(965, 38)),
+            HealthBar("ui/Heart_Icon", position=(655, 38), size=(60, 60))
         ]
 
         for element in ui_elements:
