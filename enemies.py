@@ -9,7 +9,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, surface, enemy_projectile_group, player_position, firewall_group):
         super().__init__()
         self.surface = surface
-        self.image = load_sprite_sheet("enemies/wizard_idle", frame=0, width=40, height=60, scale=2, colour=(0, 0, 0))
+        self.image = load_sprite_sheet("enemies/wizard_idle", frame=0, width=40, height=60, scale=3, colour=(0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.center = (960, 170)
         self.enemy_projectile_group = enemy_projectile_group
@@ -23,6 +23,11 @@ class Enemy(pygame.sprite.Sprite):
         # Firewall
         self.firewall_last_shot_time = 0
         self.firewall_interval = 2
+        # Animation
+        self.animation_frame = 0
+        self.animation_timer = 0
+        self.animation_speed = 4
+        self.animation_steps = 8
 
     def cast_fireball(self):
         current_time = pygame.time.get_ticks() / 1000
@@ -38,8 +43,21 @@ class Enemy(pygame.sprite.Sprite):
             self.firewall_group.add(firewall)
             self.firewall_last_shot_time = current_time
 
+    def animate(self):
+        self.animation_timer += 1
+
+        if self.animation_timer >= self.animation_speed:
+            self.animation_timer = 0
+            self.animation_frame += 1
+
+            if self.animation_frame >= self.animation_steps:
+                self.animation_frame = 0
+
+            self.image = load_sprite_sheet("enemies/wizard_idle", frame=self.animation_frame, width=40, height=60, scale=3, colour=(0, 0, 0))
+            self.surface.blit(self.image, self.rect)
+
     def update(self):
-        self.surface.blit(self.image, self.rect)
+        self.animate()
         self.cast_fireball()
         self.cast_firewall()
 
