@@ -3,15 +3,15 @@ import random
 
 import pygame
 
-from helper_functions import load_image
+from helper_functions import load_image, load_sprite_sheet
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, surface, enemy_projectile_group, player_position, firewall_group):
         super().__init__()
         self.surface = surface
-        self.image = load_image("enemies/player_tank")
+        self.image = load_sprite_sheet("enemies/wizard_idle", frame=0, width=40, height=60, scale=2, colour=(0, 0, 0))
         self.rect = self.image.get_rect()
-        self.rect.center = (150, 150)
+        self.rect.center = (960, 170)
         self.enemy_projectile_group = enemy_projectile_group
         self.firewall_group = firewall_group
         self.player_position = player_position

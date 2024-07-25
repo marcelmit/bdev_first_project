@@ -6,6 +6,14 @@ def load_image(path):
     image = pygame.image.load(BASE_IMG_PATH + path + ".png").convert_alpha()
     return image
 
+def load_sprite_sheet(path, frame, width, height, scale, colour):
+    original_image = pygame.image.load(BASE_IMG_PATH + path + ".png").convert_alpha()
+    image = pygame.Surface((width, height)).convert_alpha()
+    image.blit(original_image, (0, 0), ((frame * width), 0, width, height))
+    image = pygame.transform.scale(image, (width * scale, height * scale))
+    image.set_colorkey(colour)
+    return image
+
 # Rotate image based on movement direction
 def rotate_image(image, direction):
     if direction == "up":
