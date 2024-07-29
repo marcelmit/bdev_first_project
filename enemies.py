@@ -11,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.surface = surface
         self.image = load_sprite_sheet("enemies/wizard_idle", frame=0, width=40, height=60, scale=3, colour=(0, 0, 0))
         self.rect = self.image.get_rect()
-        self.rect.center = (960, 170)
+        self.rect.center = (960, 90)
         self.enemy_projectile_group = enemy_projectile_group
         self.firewall_group = firewall_group
         self.player_position = player_position

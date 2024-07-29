@@ -15,7 +15,7 @@ class PlayerTank(pygame.sprite.Sprite):
         self.velocity = 15
         # Player Health
         self.max_health = 200
-        self.health = 100
+        self.health = 200
         self.ratio = self.health / self.max_health
         self.ammo = 5
         # "Cooldown" for the shoot method
@@ -36,10 +36,10 @@ class PlayerTank(pygame.sprite.Sprite):
             self.rect.left = 15
         elif self.rect.right >= 1890:
             self.rect.right = 1890
-        if self.rect.top <= 87:
-            self.rect.top = 87
-        elif self.rect.bottom >= 965:
-            self.rect.bottom = 965
+        if self.rect.top <= 240:
+            self.rect.top = 240
+        elif self.rect.bottom >= 1036:
+            self.rect.bottom = 1036
 
         if pressed_keys[K_UP] or pressed_keys[K_w]:
             direction_y -= self.velocity

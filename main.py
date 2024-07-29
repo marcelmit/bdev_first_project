@@ -7,7 +7,7 @@ from enum import Enum
 
 from player import PlayerTank
 from enemies import Enemy
-from ui_elements import Button, HealthBar
+from ui_elements import Button, HealthBar, CloudSpawner
 
 WHITE = (255, 255, 255)
 
@@ -32,8 +32,11 @@ class Game:
         self.player = PlayerTank(self.player_projectile_group)
         self.player_group = pygame.sprite.GroupSingle(self.player)
 
-        self.enemy = Enemy(self.screen, self.enemy_projectile_group, self.player, self.firewall_group)
-        self.enemies_group = pygame.sprite.Group(self.enemy)
+        self.cloud_group = pygame.sprite.Group()
+        self.cloud_spawn = CloudSpawner(self.cloud_group)
+
+        #self.enemy = Enemy(self.screen, self.enemy_projectile_group, self.player, self.firewall_group)
+        #self.enemies_group = pygame.sprite.Group(self.enemy)
                 
     def events(self):
         esc = pygame.key.get_pressed()         
@@ -142,17 +145,21 @@ class Game:
     def render_gameplay(self):
         self.screen.fill(WHITE)
 
+        sky_background = Button("ui/Sky_Background", position=(960, 100), size=(1920, 250))
+        sky_background.update(self.screen)
+        self.cloud_spawn.add_cloud()
+        self.cloud_group.draw(self.screen)
+        self.cloud_group.update()
+
         ui_elements = [
-            Button("ui/Gameplay_Background", position=(960, 530), size=(1920, 930)),
-            Button("ui/Button_Square", position=(960, 35), size=(1950, 80)), # Top bar
-            Button("ui/Button_Square", position=(960, 1020), size=(1950, 80)), # Bot bar
-            Button("ui/Rocket_Icon", position=(1080, 1020), size=(40, 40), text=str(self.player.ammo), text_position=(1140, 1020)), # Player ammo count
-            HealthBar("ui/HP_Bar", position=(533, 1020), size=(500 * (self.player.health / self.player.max_health), 50)), # Player health bar
-            HealthBar("ui/HP_Bar_Frame", position=(530, 1020), size=(500, 50), text=(f"{self.player.health}" + "/" + f"{self.player.max_health}"), text_position=(780, 1020)),
-            HealthBar("ui/Heart_Icon", position=(514, 1018), size=(55, 55)),
-            HealthBar("ui/HP_Bar", position=(665, 38), size=(580 * (self.enemy.health / self.enemy.max_health), 50)), # Enemy health bar
-            HealthBar("ui/HP_Bar_Frame", position=(665, 38), size=(580, 50), text=(f"{self.enemy.health}" + "/" + f"{self.enemy.max_health}"), text_position=(965, 38)),
-            HealthBar("ui/Heart_Icon", position=(655, 38), size=(60, 60))
+            Button("ui/Gameplay_Background", position=(960, 640), size=(1920, 830)),
+            Button("ui/Rocket_Icon", position=(570, 1020), size=(40, 40), text=str(self.player.ammo), text_position=(620, 1020)), # Player ammo count
+            HealthBar("ui/HP_Bar", position=(27, 1020), size=(480 * (self.player.health / self.player.max_health), 50)), # Player health bar
+            HealthBar("ui/HP_Bar_Frame", position=(25, 1020), size=(500, 50), text=(f"{self.player.health}" + "/" + f"{self.player.max_health}"), text_position=(275, 1020)),
+            HealthBar("ui/Heart_Icon", position=(20, 1018), size=(55, 55)),
+            HealthBar("ui/HP_Bar", position=(1325, 38), size=(580 * (self.enemy.health / self.enemy.max_health), 50)), # Enemy health bar
+            HealthBar("ui/HP_Bar_Frame", position=(1325, 38), size=(580, 50), text=(f"{self.enemy.health}" + "/" + f"{self.enemy.max_health}"), text_position=(1625, 38)),
+            HealthBar("ui/Heart_Icon", position=(1315, 38), size=(60, 60))
         ]
 
         for element in ui_elements:
